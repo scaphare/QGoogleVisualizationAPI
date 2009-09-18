@@ -1,0 +1,17 @@
+<script src="<?php echo Google_Visualization::APISCRIPT; ?>"></script>
+<script>
+var cObj = <?php echo $configObject;?>;
+function draw() {
+  var dataObj = <?php echo $dataObject->getData()?>;
+  var data = new google.visualization.DataTable(dataObj, 0.5);
+  var eStr = 'new '+cObj.provider+'.'+cObj.scope+'.'+cObj.type+'(document.getElementById("'+cObj.port+'"))';
+  visualization = eval(eStr);
+  visualization.draw(data, cObj.props);  
+  google.visualization.events.addListener(visualization, 'select', function() {
+    var row = visualization.getSelection()[0].row;
+	document.getElementById('selectedValue').innerHTML = data.getValue(row, 0);
+  });
+}
+google.load(cObj.scope, cObj.version,{'packages': [cObj.type.toLowerCase()], 'language':cObj.language});
+google.setOnLoadCallback(draw);
+</script>

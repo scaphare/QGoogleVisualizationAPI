@@ -1,0 +1,39 @@
+<script src="<?php echo Google_Visualization::APISCRIPT; ?>"></script>
+<script>
+var cObj = <?php
+if(is_array($configObject)):
+	echo '[';
+	foreach($configObject as $i => $o):
+		if($i>0) echo ",";
+		echo $o;
+	endforeach;
+	echo '];';
+?>
+
+function draw() {
+  var dataObj = <?php echo $dataObject->getData()?>;
+  var data = new google.visualization.DataTable(dataObj, 0.5);
+  var eStr = 'new '+cObj[0].provider+'.'+cObj[0].scope+'.'+cObj[0].type+'(document.getElementById("'+cObj[0].port+'"))';
+  visualization = eval(eStr);
+  visualization.draw(data, cObj[0].props);
+}
+var cPackages=[];
+var j=cObj.length;
+for(var i=0;i<j;i++){cPackages.push(cObj[i].type.toLowerCase());}
+google.load(cObj[0].scope, cObj[0].version,{'packages': cPackages, 'language':cObj[0].language});
+google.setOnLoadCallback(draw);
+<?php
+else:
+	echo $configObject.";\n";
+?>
+function draw() {
+  var dataObj = <?php echo $dataObject->getData()?>;
+  var data = new google.visualization.DataTable(dataObj, 0.5);
+  var eStr = 'new '+cObj.provider+'.'+cObj.scope+'.'+cObj.type+'(document.getElementById("'+cObj.port+'"))';
+  visualization = eval(eStr);
+  visualization.draw(data, cObj.props);
+}
+google.load(cObj.scope, cObj.version,{'packages': [cObj.type.toLowerCase()], 'language':cObj.language});
+google.setOnLoadCallback(draw);
+<?php endif; ?>
+</script>

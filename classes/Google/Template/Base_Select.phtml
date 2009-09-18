@@ -1,0 +1,47 @@
+<script src="<?php echo Google_Visualization::APISCRIPT; ?>"></script>
+<script>
+var cObj=<?php
+/**
+ * table / org chart connection
+ */
+if(is_array($configObject)):
+	echo '[';
+	foreach($configObject as $i => $o):
+		if($i>0) echo ",";
+		echo $o;
+	endforeach;
+	echo '];';
+?>
+
+function draw() {
+  var dataObj = <?php echo $dataObject->getData()?>;
+  var data = new google.visualization.DataTable(dataObj, 0.5);
+  var eStr = 'new '+cObj[0].provider+'.'+cObj[0].scope+'.'+cObj[0].type+'(document.getElementById("'+cObj[0].port+'"))';
+  var eStr2 = 'new '+cObj[1].provider+'.'+cObj[1].scope+'.'+cObj[1].type+'(document.getElementById("'+cObj[1].port+'"))';
+  v1 = eval(eStr);
+  v2 = eval(eStr2);
+  v1.draw(data, cObj[0].props);
+  v2.draw(data, cObj[1].props);
+  google.visualization.events.addListener(v1, 'select', function(){v2.setSelection(v1.getSelection());});
+  google.visualization.events.addListener(v2, 'select', function(){v1.setSelection(v2.getSelection());});
+}
+var cPackages=[];
+var j=cObj.length;
+for(var i=0;i<j;i++){cPackages.push(cObj[i].type.toLowerCase());}
+google.load(cObj[0].scope, cObj[0].version,{'packages': cPackages, 'language':cObj[0].language});
+google.setOnLoadCallback(draw);
+<?php
+else:
+	echo $configObject;
+?>
+function draw() {
+  var dataObj = <?php echo $dataObject->getData()?>;
+  var data = new google.visualization.DataTable(dataObj, 0.5);
+  var eStr = 'new '+cObj.provider+'.'+cObj.scope+'.'+cObj.type+'(document.getElementById("'+cObj.port+'"))';
+  visualization = eval(eStr);
+  visualization.draw(data, cObj.props);
+}
+google.load(cObj.scope, cObj.version,{'packages': [cObj.type.toLowerCase()], 'language':cObj.language});
+google.setOnLoadCallback(draw);
+<?php endif; ?>
+</script>

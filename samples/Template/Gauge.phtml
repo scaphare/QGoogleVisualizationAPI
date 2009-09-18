@@ -1,0 +1,21 @@
+<script src="<?php echo Google_Visualization::APISCRIPT; ?>"></script>
+<script>
+var cObj = <?php echo $configObject;?>;
+var dataObj = <?php echo $dataObject->getData()?>;
+var dtTable;
+function draw() {
+  var data = new google.visualization.DataTable(dataObj);
+  dtTable=data;
+  var eStr = 'new '+cObj.provider+'.'+cObj.scope+'.'+cObj.type+'(document.getElementById("'+cObj.port+'"))';
+  visualization = eval(eStr);
+  visualization.draw(data, cObj.props);
+}
+function changeTemp(dir) {
+   dtTable.setValue(0, 0, dtTable.getValue(0, 0) + dir * 25);
+   dtTable.setValue(0, 1, dtTable.getValue(0, 1) + dir * 20);
+   visualization.draw(dtTable, cObj.props);
+}
+
+google.load(cObj.scope, cObj.version,{'packages': [cObj.type.toLowerCase()], 'language':cObj.language});
+google.setOnLoadCallback(draw);
+</script>

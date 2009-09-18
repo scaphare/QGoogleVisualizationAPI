@@ -1,0 +1,15 @@
+<script src="<?php echo Google_Visualization::APISCRIPT; ?>"></script>
+<script type="text/javascript">
+  <?php echo $packageObject;?>
+</script>
+<script>
+<?php echo $dataTableObject;?>
+<?php if(is_array($functionObject)):
+	foreach($functionObject as $f):
+		echo $f;
+	endforeach;
+else:
+	echo $functionObject;
+endif;
+?>	
+</script>
